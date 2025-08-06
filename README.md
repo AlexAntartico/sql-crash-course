@@ -79,5 +79,8 @@ Not only you will address the issue of ensuring availability and disaster recove
 
 Making your operations team to file a ticket and wait for approval just to run a SELECT query is an auto sabotage that will cripple the sla to reply to business requests and slow down incident response. I can honestly just think of two reasons to do this, a dysfunctional IT culture or a  lack of trust in the people running the systems.
 
+![a2bydk](https://github.com/user-attachments/assets/17935f96-071e-4e3b-81cc-4f39716a1efe)
+
+
 "But what can I do if a table contains PII or sensitive data" I hear you ask. If a table contains data falling under GDPR or HIPAA regulations, the answer is never to lock the door and throw away the key but implementing modern security controls like **data masking, column level security and/or granular roles** to strike a balance between providing access to your ops teams and being compliant with security policies. Is not 2005 anymore, we have better tools, better practices. Lets keep discipline in operations and implement them.
 
