@@ -133,7 +133,28 @@ Do you notice something weird on the output of this query? The lack of indexes i
 
 **Why are these two queries efficient?** These are metadata queries on system catalogues, we are not scanning the full table.
 
-## Production Guidelines: Please Don't Be a Bottleneck
+## Get Basic Table Statistics
+
+This is also a common query `SELECT COUNT(*) AS total_rows FROM employees;`, a query that you should avoid running in a prod database you do not know. Remember, right now we are supposed to not know the size of the DB.
+
+```sql
+SELECT reltuples::bigint AS approximate_rows
+FROM pg_class
+WHERE relname = 'employees';
+```
+
+`SELECT reltuples::bigint AS approximate_rows` Here we are selecting the `reltuples` column and cast it to a `bigint` data type. 
+  - `reltuples` is a column in `pg_class` that contains an estimate of the number of rows in a table.
+  - `pg_class` is a system catalog in PostgreSQL that contains information about tables, indexes, sequences, and other relational objects. 
+
+This query is useful when you need a quick estimate of the number of rows in a table, and you don't need an exact count. For example, you might use it to: Get a rough idea of the size of a table or decide whether to run a more expensive query or operation or monitor the growth or shrinkage of a table over time.
+
+<img width="348" height="144" alt="image" src="https://github.com/user-attachments/assets/ef464741-958d-46bb-9e2b-902bb710dd8c" />
+
+You might ask yourself why an approximate count? The reason is that `reltuples` is updated by the `ANALYZE` command which is uses to collect statistics about the contents of tables. The analyze command is typically runned by the `autovacuum` daemon or manually by a database Admin and therefore not ran immediately after every change to the table. Based on the results you may decide on whether to run a more expensive query or operation like `SELECT COUNT(*)`
+
+
+# Production Guidelines: Please Don't Be a Bottleneck
 
 Let's get this straight: In a prod environment you **should** be having DQL access to the DB's of the applications you support. Any other command belonging to DML, DDL etc are usually reserved to either DBA teams or you will need to go through your organization's formal deployment process. Do not cowboy the system, nIt does not store data itself but dynamically displays data from one or more tables.o exceptions.
 
