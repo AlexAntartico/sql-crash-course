@@ -1,0 +1,46 @@
+/*
+Purpose: This table is intended to be used for didactical purposes.
+- Table has duplicate IDs
+  - Kirito Rogers, Deju Kent and Asuna Starks department is Sales
+  - Zero Two's manager id is 101abc
+  - Erza Prince's emp_id is 107mno
+  - Managers have their same emp_id in manager_id field
+  - Android 18 Smith is a manager
+*/
+
+CREATE TABLE employees (
+    emp_id TEXT,
+    emp_name TEXT,
+    manager_id TEXT,
+    department TEXT
+);
+
+INSERT INTO employees (emp_id, emp_name, manager_id, department) VALUES
+('202abc', 'Goku Doe', '202abc', 'Sales'),
+('303abc', 'Sailor Moon White', '303abc', 'Marketing'),
+('104def', 'Mikasa Johnson', '101abc', 'Engineering'),
+('105ghi', 'Levi Williams', '101abc', 'Engineering'),
+('106jkl', 'Naruto Brown', '101abc', 'Engineering'),
+(NULL, 'Erza Prince', '101abc', 'Engineering'),
+('108pqr', 'Edward Adams', '101abc', 'Engineering'),
+('101abc', 'Android 18 Smith', Null, 'Engineering'),
+('109stu', 'Spike Miller', '101abc', 'Engineering'),
+('204def', 'Winry Kelly', '202abc', 'Sales'),
+('205ghi', 'Ichigo Ford', '202abc', 'Sales'),
+('206jkl', 'Luffy Greene', '202abc', 'Sales'),
+('207mno', 'Zoro Lewis', '202abc', 'Sales'),
+('208pqr', 'Nami Zor-El', '202abc', 'Sales'),
+('304def', 'Light Clark', '303abc', 'Marketing'),
+('305ghi', 'Yuno Stone', '303abc', 'Marketing'),
+('306jkl', 'Eren Allen', '303abc', 'Marketing'),
+('307mno', 'Sasuke Wilde', '303abc', 'Marketing'),
+('404def', 'Tanjiro Parker', '101abc', 'Engineering'),
+('404def', 'Vegeta Wayne', '101abc', 'Engineering'),
+('505ghi', 'Deku Kent', '202abc', Null),
+('505ghi', 'Gojo Allen', '202abc', 'Sales'),
+('606jkl', 'Kakashi Queen', '303abc', 'Marketing'),
+('606jkl', 'Jotaro Curry', '303abc', 'Marketing'),
+('707mno', 'Rem Maximoff', '101abc', 'Engineering'),
+('707mno', 'Zero Two', nUll, 'Engineering'),
+('808pqr', 'Kirito Rogers', '202abc', NULL),
+('808pqr', 'Asuna Stark', '202abc', Null);
