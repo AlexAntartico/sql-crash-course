@@ -71,9 +71,71 @@ Transactions are a group of operations treated as an all-or-nothing unit.
 
 <img width="725" height="404" alt="image" src="https://github.com/user-attachments/assets/060cbf56-2675-4c8d-a2b8-08218d4e5508" />
 
+# Dive in - our first steps
+
+I recommend you use [sqlfiddle](https://sqlfiddle.com/) or install [pgadmin](https://www.pgadmin.org/download/). Pgadmin is a great resource and most of the practical examples here do not require a dedicated db.
+
+**Copy the statements from [this page](https://github.com/AlexAntartico/sql-crash-course/blob/main/employees_simple_table.db) and execute**. Consider the following:
+
+- Table has duplicate IDs
+  - Kirito Rogers, Deju Kent and Asuna Starks department is Sales
+  - Zero Two's manager id is 101abc
+  - Erza Prince's emp_id is 107mno
+  - Managers have their same emp_id in manager_id field
+  - Android 18 Smith is a manager
+
+Don't use `SELECT * FROM table;` on 
+- prod DBs
+- DBs you are not familiar with (accessing for 1st time)
+
+`SELECT *` is great for learning purposes but you dont want to do a full scan in a prod table during business hours. I cannot imagine a valid scenario where you whould want to have hundreds of thousands or millions of records in screen .We will approach with three simple steps:
+
+1. Understand Table Structure
+2. Fetch Basic Table Statistics
+3. Sample the data
+
+## Understand Table Structure
+
+**The information_schema.columns view**
+
+Run this query
+
+```sql
+SELECT column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_name = 'employees';
+```
+You will see these records:
+
+<img width="443" height="227" alt="image" src="https://github.com/user-attachments/assets/a7fbd23b-25e9-4e02-8bb3-e8794f2d621a" />
+
+This specific query retrieves three pieces of information:
+* `column_name`: The name of the column in the table
+* `data_type`: The data type of each column, like `var`, `varchar`, `int`
+* `is_nullable`: Whether each column contains `NULL` values
+
+`information_schema.columns` is a system view. A **view** is a pre-defined SQL query, views not store data itself but dynamically displays data from one or more tables. This specific view contains metadata about the columns of all tables in the database, notice we are filtering a few columns where table name is `employees`.
+
+**pg_indexes view**
+
+run:
+```sql
+SELECT *
+FROM pg_indexes
+WHERE tablename = 'employees';
+```
+
+`pg_indexes` is another system view in PostgreSQL that contains information about the indexes, primary keys or foreign keys on tables in the database. We have to specify the table, else we will fetch everything. Output will look like this:
+
+<img width="544" height="200" alt="image" src="https://github.com/user-attachments/assets/a2af996c-1fe4-4871-82be-18c8cf8c86ac" />
+
+Do you notice something weird on the output of this query? The lack of indexes in this table is not something standard in any regular prod environment?
+
+**Why are these two queries efficient?** These are metadata queries on system catalogues, we are not scanning the full table.
+
 ## Production Guidelines: Please Don't Be a Bottleneck
 
-Let's get this straight: In a prod environment you **should** be having DQL access to the DB's of the applications you support. Any other command belonging to DML, DDL etc are usually reserved to either DBA teams or you will need to go through your organization's formal deployment process. Do not cowboy the system, no exceptions.
+Let's get this straight: In a prod environment you **should** be having DQL access to the DB's of the applications you support. Any other command belonging to DML, DDL etc are usually reserved to either DBA teams or you will need to go through your organization's formal deployment process. Do not cowboy the system, nIt does not store data itself but dynamically displays data from one or more tables.o exceptions.
 
 From a resiliency point of view, the absolute bare minimum is to run two database instances on separate hosts. These are usually named prod and a prod-replication (or prod-replica/prod-repl). These instancess MUST live on entirely different infrastructure, be it different physical hosts  or even better, different availability zones. If your primary replication is in the same rack or worse: on the same physical host (I have seen this happened (╯°□°)╯), you have not built resilient infrastructure, you created a single point of failure and a post-mortem document that will be very difficult and akward to explain after that outage that will render your db unusable.
 
