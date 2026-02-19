@@ -1,6 +1,6 @@
 # Install Adventureworks in Postgresql                                                                                                                                    
 
-1* Go to https://github.com/lorint/AdventureWorks-for-Postgres
+1. Go to https://github.com/lorint/AdventureWorks-for-Postgres
 
 ```bash
 wget https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks-oltp-install-script.zip
